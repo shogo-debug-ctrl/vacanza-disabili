@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atlante · Vacanza 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C0D0E; --ink2:#5A6566; --bg:#FBFCFC; --paper:#FFFFFF;
+  --line:#E7EBEB; --line2:#D6DCDC;
+  --petrol:#0E5A66; --petrol-d:#093C45; --petrol-l:#13727F; --petrol-bg:#E6F0F1;
+  --r:16px; --r-sm:10px; --shadow:0 8px 30px rgba(12,46,52,.10); --shadow-s:0 2px 10px rgba(12,46,52,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Oxanium",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:104px}
+.serif{font-family:"Oxanium",sans-serif;font-weight:600;letter-spacing:-.01em}
+.wrap{max-width:640px;margin:0 auto;padding:0 18px}
+
+.hero{position:relative;min-height:300px;display:flex;align-items:flex-end;overflow:hidden;background:#0B4A54}
+.herobg{position:absolute;inset:0;width:100%;height:100%}
+.hero .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,46,52,.05),rgba(8,46,52,.62))}
+.hero .inner{position:relative;padding:30px 18px 24px;color:#fff;max-width:640px;margin:0 auto;width:100%}
+.kick{font-size:12px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:#D7E6E6;margin:0 0 8px}
+.hero h1{font-size:58px;line-height:.92;margin:0;color:#fff}
+.hero h1 em{font-style:italic}
+.hero p{margin:12px 0 0;font-size:15.5px;color:#E8F0F0;max-width:30em}
+
+.tabs{position:sticky;top:0;z-index:30;background:rgba(251,252,252,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;gap:6px;padding:10px 0;border-bottom:1px solid var(--line)}
+.tab{flex:1;border:none;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink2);padding:11px 8px;border-radius:var(--r-sm);cursor:pointer;transition:background .15s,color .15s}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff}
+.panel{display:none;padding-top:18px}
+.panel.on{display:block}
+
+.namebox{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;margin-bottom:18px;box-shadow:var(--shadow-s)}
+.namebox label{display:block;font-size:13px;font-weight:600;margin-bottom:7px}
+input[type=text],textarea,select{width:100%;font-family:inherit;font-size:16px;color:var(--ink);background:var(--paper);border:1px solid var(--line2);border-radius:var(--r-sm);padding:12px 13px}
+textarea{min-height:130px;resize:vertical}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--petrol);outline-offset:2px}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.seg{display:flex;gap:3px;background:var(--petrol-bg);padding:3px;border-radius:var(--r-sm)}
+.seg button{border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:var(--petrol-d);padding:8px 14px;border-radius:8px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--paper);color:var(--ink);box-shadow:var(--shadow-s)}
+.controls select{width:auto;flex:1;min-width:150px;font-size:14px;padding:10px 11px}
+.check{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink2);margin-bottom:14px;cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--petrol)}
+.count{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);font-weight:600;margin:0 2px 14px}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(12,46,52,.14)}
+.card.picked{outline:2.5px solid var(--petrol);outline-offset:-1px}
+.cover{position:relative;aspect-ratio:16/9;background:#0B4A54}
+.cover svg{position:absolute;inset:0;width:100%;height:100%}
+.cover .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .55s ease}
+.cover .photo.show{opacity:1}
+.cover .csc{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,46,52,0) 40%,rgba(7,40,46,.74) 100%)}
+.cover .cmeta{position:absolute;left:16px;right:16px;bottom:13px;color:#fff}
+.cover .ctry{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:#CFE2E2}
+.cover .cn{font-size:32px;line-height:1;margin:3px 0 0;color:#fff}
+.ptag{position:absolute;top:13px;right:13px;background:rgba(255,255,255,.95);color:var(--ink);font-size:13px;font-weight:700;padding:6px 11px;border-radius:20px}
+.rbadge{position:absolute;top:13px;left:13px;width:32px;height:32px;border-radius:50%;background:var(--petrol);color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.body{padding:14px 16px 16px}
+.tagline{font-size:15px;color:var(--ink2);margin:0 0 12px}
+.meta{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:5px 10px}
+.chip .lab{font-weight:600;color:var(--ink)}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:8px;padding:5px 10px}
+.pill.facile{background:var(--petrol);color:#fff}
+.pill.medio{background:transparent;color:var(--petrol-d);border:1.5px solid var(--petrol)}
+.pill.scomodo{background:transparent;color:var(--ink2);border:1.5px solid var(--line2)}
+.seg5{display:inline-flex;gap:3px}
+.seg5 i{display:block;width:10px;height:5px;border-radius:2px;background:var(--line2)}
+.seg5 i.f{background:var(--petrol)}
+.addbtn{margin-top:14px;width:100%;border:1.5px solid var(--petrol);background:transparent;color:var(--petrol-d);font-family:inherit;font-weight:700;font-size:14px;padding:12px;border-radius:var(--r-sm);cursor:pointer;transition:background .12s,color .12s}
+.addbtn.on{background:var(--petrol);color:#fff}
+.addbtn:disabled{opacity:.4;cursor:not-allowed;border-color:var(--line2);color:var(--ink2)}
+
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(251,252,252,.96);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:11px 18px calc(11px + env(safe-area-inset-bottom))}
+.bar .inner{max-width:640px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.bar .picks{flex:1;font-size:13px;color:var(--ink2);min-width:0;overflow:hidden}
+.bar .picks b{color:var(--ink)}
+.btn{border:none;background:var(--petrol);color:#fff;font-family:inherit;font-weight:700;font-size:15px;padding:13px 20px;border-radius:var(--r-sm);cursor:pointer;white-space:nowrap;transition:background .12s,transform .05s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{background:var(--line2);color:#fff;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--petrol-d);border:1.5px solid var(--line2)}
+.btn.dark{background:var(--ink)}
+.btn.full{width:100%}
+
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(8,40,46,.55);display:none;align-items:flex-end;justify-content:center}
+.overlay.on{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:640px;max-height:94vh;max-height:94dvh;overflow:auto;border-radius:24px 24px 0 0;padding-bottom:calc(24px + env(safe-area-inset-bottom));animation:slideup .3s cubic-bezier(.2,.7,.2,1)}
+@keyframes slideup{from{transform:translateY(28px);opacity:.4}to{transform:translateY(0);opacity:1}}
+.shero{position:relative;aspect-ratio:16/9;background:#0B4A54}
+.shero svg{position:absolute;inset:0;width:100%;height:100%}
+.shero .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .55s ease}
+.shero .photo.show{opacity:1}
+.shero .csc{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,46,52,.05),rgba(7,40,46,.7))}
+.shero .cmeta{position:absolute;left:20px;right:20px;bottom:16px;color:#fff}
+.shero .ctry{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:#CFE2E2}
+.shero .cn{font-size:46px;line-height:.98;margin:4px 0 0;color:#fff}
+.closex{position:absolute;top:13px;right:13px;border:none;background:rgba(255,255,255,.95);width:40px;height:40px;border-radius:50%;font-size:20px;color:var(--ink);cursor:pointer;z-index:2}
+.sbody{padding:20px 18px}
+.lead{font-size:16.5px;color:var(--ink);margin:0 0 18px;line-height:1.6}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.fact{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);padding:11px 13px}
+.fact .k{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);font-weight:600;margin-bottom:4px}
+.fact .v{font-size:14px;font-weight:600}
+.scores{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin-bottom:6px}
+.srow{display:flex;align-items:center;gap:14px;margin:11px 0}
+.srow .sl{flex:0 0 98px;font-size:13.5px;color:var(--ink2)}
+.track{flex:1;display:block;height:8px;background:var(--petrol-bg);border-radius:5px;overflow:hidden}
+.track .fill{display:block;height:100%;background:var(--petrol);border-radius:5px}
+.srow .sv{flex:0 0 30px;text-align:right;font-size:12px;font-weight:700;color:var(--petrol-d)}
+.sec{margin:20px 0 8px;font-size:24px}
+.exp{list-style:none;margin:0;padding:0}
+.exp li{position:relative;padding:10px 0 10px 28px;border-bottom:1px solid var(--line);font-size:15px}
+.exp li:last-child{border-bottom:none}
+.exp li::before{content:"";position:absolute;left:3px;top:16px;width:9px;height:9px;border-radius:50%;background:var(--petrol)}
+.evening{background:var(--petrol);color:#EAF4F4;border-radius:var(--r);padding:15px 17px;font-size:15px;line-height:1.6;margin-top:6px}
+.evening b{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#A9D2D6;margin-bottom:6px;font-weight:700}
+.trips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.trips span{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:7px 13px;font-size:13px;color:var(--ink2)}
+.sticky-add{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(251,252,252,0),var(--bg) 30%);padding:18px 0 4px;margin-top:22px}
+
+.steps{list-style:none;counter-reset:s;margin:6px 0;padding:0}
+.steps li{counter-increment:s;position:relative;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:18px 18px 18px 70px;margin-bottom:12px;box-shadow:var(--shadow-s)}
+.steps li::before{content:counter(s);position:absolute;left:18px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;background:var(--petrol);color:#fff;font-family:"Oxanium",sans-serif;font-weight:600;font-size:20px;display:flex;align-items:center;justify-content:center}
+.steps h3{font-family:inherit;font-size:16.5px;font-weight:700;margin:0 0 3px}
+.steps p{margin:0;font-size:14px;color:var(--ink2)}
+.guide-h{font-size:34px;margin:10px 0 4px}
+.guide-sub{color:var(--ink2);font-size:15px;margin:0 0 18px}
+
+.podium{display:grid;grid-template-columns:1fr 1.18fr 1fr;gap:9px;align-items:end;margin:8px 0 18px}
+.pod{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:16px 10px;text-align:center;box-shadow:var(--shadow-s)}
+.pod .rk{width:34px;height:34px;border-radius:50%;background:var(--petrol-bg);color:var(--petrol-d);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.pod.g{border:2px solid var(--petrol);padding-top:22px}
+.pod.g .rk{background:var(--petrol);color:#fff}
+.pod .pn{font-family:"Oxanium",sans-serif;font-weight:600;font-size:20px;margin:2px 0;line-height:1.04}
+.pod .pp{font-size:12px;color:var(--ink2)}
+.resrow{display:flex;align-items:center;gap:13px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:8px}
+.resrow .pos{font-family:"Oxanium",sans-serif;font-weight:600;font-size:18px;color:var(--ink2);width:24px;text-align:center}
+.resrow .rn{flex:1;font-weight:600}
+.resrow .rn small{display:block;font-weight:400;color:var(--ink2);font-size:12px;margin-top:1px}
+.resrow .pts{font-weight:700;color:var(--petrol-d)}
+.empty{text-align:center;color:var(--ink2);font-size:14px;padding:30px 14px;border:1px dashed var(--line2);border-radius:var(--r)}
+.note{font-size:13px;color:var(--ink2);line-height:1.6;margin-top:14px}
+.codebox{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:var(--paper);border:1px dashed var(--petrol);border-radius:var(--r-sm);padding:12px;word-break:break-all;margin:10px 0}
+.row2{display:flex;gap:8px}.row2 .btn{flex:1}
+.foot{text-align:center;font-size:17px;color:var(--ink2);padding:28px 0 8px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:380px){.facts{grid-template-columns:1fr}}
+
+.card{padding:16px 18px;overflow:visible}
+.chead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.ctry{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--petrol)}
+.cn{font-family:"Oxanium",sans-serif;font-weight:600;letter-spacing:-.01em;font-size:25px;line-height:1.06;color:var(--ink);margin-top:3px}
+.price{font-size:15px;font-weight:700;color:var(--ink);white-space:nowrap;text-align:right}
+.price span{display:block;font-weight:400;color:var(--ink2);font-size:11px;letter-spacing:.02em}
+.rankflag{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--petrol);color:#fff;font-size:13px;font-weight:700;margin-left:8px;vertical-align:2px}
+.dhead{position:relative;background:var(--petrol);color:#fff;padding:22px 18px 18px;border-radius:24px 24px 0 0}
+.dhead .ctry{color:#CFE6E6}
+.dhead .cn{color:#fff;font-size:38px;line-height:1;margin-top:4px}
+.hero h1{font-family:"Oxanium",sans-serif;text-transform:uppercase;font-weight:700;font-size:42px;letter-spacing:.5px;line-height:1.12}
+@media (max-width:380px){.hero h1{font-size:29px}}
+
+.forchi{background:#EAF3F3;border-left:3px solid var(--petrol);border-radius:10px;padding:11px 14px;margin:8px 0 4px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.forchi span{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--petrol);font-weight:700;margin-bottom:3px}
+.expL{list-style:none;padding:0;margin:0}
+.expL li{padding:11px 2px;border-bottom:1px solid var(--line)}
+.expL li:last-child{border-bottom:none}
+.expL .et{font-weight:700;font-size:15px;color:var(--ink)}
+.expL .ed{font-size:13px;color:var(--ink2);margin-top:3px;line-height:1.5}
+.dasapere{font-size:13.5px;color:var(--ink2);line-height:1.55;background:#F6F8F7;border:1px solid var(--line);border-radius:10px;padding:11px 14px}
+.tripsL{display:flex;flex-direction:column;gap:8px}
+.trip{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border:1px solid var(--line);border-radius:10px;padding:9px 13px}
+.trip b{font-size:14px;color:var(--ink);white-space:nowrap}
+.trip span{font-size:12px;color:var(--ink2);text-align:right}
+
+.volo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.volo-row{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 11px}
+.vc{font-size:13.5px;font-weight:600;color:var(--ink)}
+.vs{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.vs-d{background:#DDF0EC;color:#0B5B57}
+.vs-s{background:#FBEFD6;color:#8A5A12}
+.vs-x{background:#EFE3E3;color:#9A4444}
+.volo-note{font-size:11.5px;color:var(--ink2);margin-top:9px;line-height:1.55}
+@media (max-width:380px){.volo-grid{grid-template-columns:1fr}}
+
+.volo-price{margin-top:10px;font-size:13.5px;color:var(--petrol);font-weight:600}
+.volo-price b{font-weight:800}
+.volo-price span{font-weight:600;font-size:10px;color:var(--ink2);text-transform:uppercase;letter-spacing:.12em;margin-left:6px}
+
+.howto{background:#EAF3F3;border:1px solid var(--line);border-left:3px solid var(--petrol);border-radius:10px;padding:11px 14px;font-size:14px;line-height:1.5;color:var(--ink);margin-bottom:14px}
+.costline{font-size:12px;color:var(--ink2);margin:5px 0 2px}
+.costline b{color:var(--ink);font-weight:700}
+.volo-total{margin-top:6px;font-size:13.5px;color:var(--ink)}
+.volo-total b{color:var(--petrol);font-weight:800}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="herobg" viewBox="0 0 640 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0C525E"/><stop offset="1" stop-color="#13727F"/></linearGradient></defs>
+    <rect width="640" height="300" fill="url(#hsky)"/>
+    <circle cx="498" cy="78" r="48" fill="#FBF7EF" opacity=".92"/>
+    <path d="M0,150 C150,118 320,168 470,132 C560,112 640,148 640,148 L640,300 L0,300Z" fill="#0E5A66" opacity=".8"/>
+    <path d="M0,188 C140,162 300,210 460,184 C560,168 640,196 640,196 L640,300 L0,300Z" fill="#0A434C"/>
+    <path d="M0,232 C120,214 300,250 470,228 C560,216 640,238 640,238 L640,300 L0,300Z" fill="#073942"/>
+  </svg>
+  <div class="scrim"></div>
+  <div class="inner">
+    <p class="kick">Vacanza settembre 2027<br>7 notti</p>
+    <h1 class="serif">La compagnia<br>dell'autismo</h1>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" role="tablist">
+    <button class="tab" id="tab-mete" role="tab" aria-selected="true" aria-controls="p-mete">Mete</button>
+    <button class="tab" id="tab-ris" role="tab" aria-selected="false" aria-controls="p-ris">Risultati</button>
+    <button class="tab" id="tab-guida" role="tab" aria-selected="false" aria-controls="p-guida">Guida</button>
+  </nav>
+
+  <section class="panel on" id="p-mete" role="tabpanel" aria-labelledby="tab-mete">
+    <p class="howto">Scegli le tue 3 mete preferite, genera il codice e invialo a <b>Shogo</b>.</p>
+    <div class="namebox">
+      <label for="nome">Il tuo nome</label>
+      <input type="text" id="nome" placeholder="es. Marco" autocomplete="name">
+    </div>
+    <div class="controls">
+      <div class="seg" id="cf" role="group" aria-label="Filtra per paese">
+        <button data-c="all" aria-pressed="true">Tutte</button>
+        <button data-c="ES" aria-pressed="false">Spagna</button>
+        <button data-c="PT" aria-pressed="false">Portogallo</button>
+      </div>
+      <select id="sort" aria-label="Ordina le mete">
+        <option value="tr">Più tranquille</option>
+        <option value="se">Più vita serale</option>
+        <option value="pr">Prezzo più basso</option>
+        <option value="az">A → Z</option>
+      </select>
+    </div>
+    <p class="count" id="count"></p>
+    <div id="list"></div>
+  </section>
+
+  <section class="panel" id="p-ris" role="tabpanel" aria-labelledby="tab-ris">
+    <h2 class="serif guide-h">I risultati</h2>
+    <p class="guide-sub">Per chi raccoglie i voti: incolla qui i codici ricevuti (anche i messaggi interi) e tocca Calcola.</p>
+    <textarea id="codes" placeholder="Incolla qui i codici VOTO:…"></textarea>
+    <div class="row2" style="margin-top:10px">
+      <button class="btn" id="calc">Calcola</button>
+      <button class="btn ghost" id="addcodes">Aggiungi e salva</button>
+    </div>
+    <button class="btn ghost full" id="resetcodes" style="margin-top:8px">Svuota i voti salvati</button>
+    <div id="results" style="margin-top:20px"></div>
+  </section>
+
+  <section class="panel" id="p-guida" role="tabpanel" aria-labelledby="tab-guida">
+    <h2 class="serif guide-h">Come si vota</h2>
+    <p class="guide-sub">Tre passi, meno di un minuto.</p>
+    <ol class="steps">
+      <li><h3>Scrivi il tuo nome</h3><p>In alto nella scheda “Mete”, così il tuo voto è riconoscibile.</p></li>
+      <li><h3>Scegli le tue 3 mete</h3><p>Tocca una scheda per scoprire attività, voli e dettagli. Aggiungi le preferite in ordine: la 1ª vale di più.</p></li>
+      <li><h3>Genera e invia il voto</h3><p>Tocca “Genera il mio voto” e condividi il codice con chi raccoglie i voti del gruppo. Fatto.</p></li>
+    </ol>
+    <p class="note">Puoi cambiare idea quando vuoi: ri-genera il voto e reinvialo. Le tue scelte restano salvate su questo telefono.</p>
+    <p class="note">Prezzi, voli e tempi sono <b>stime indicative</b>, ordini di grandezza da riconfermare: gli operativi e le tariffe di settembre 2027 non sono ancora pubblicati.</p>
+  </section>
+
+  <p class="foot serif">Buon viaggio — ovunque si vada.</p>
+</div>
+
+<div class="bar" id="votebar">
+  <div class="inner">
+    <div class="picks" id="picksbar">Nessuna meta scelta</div>
+    <button class="btn" id="genbtn" disabled>Genera il mio voto</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"></div></div>
+
+<script>
+const DATA=[
+{id:"jav",n:"Jávea",r:"Costa Blanca · Spagna",c:"ES",lock:11,tr:4,se:3,beach:4,kids:4,food:4,sea:"Spiagge e cale a pochi minuti",ap:"Alicante",vol:"facile",vi:"alta",pl:900,ph:1400,tag:"Cale tra le pinete e un porto vivace per le sere d'estate.",desc:"Borgo bianco affacciato sul Montgó, con tre anime: il centro storico, il porto dei pescatori e la spiaggia dell'Arenal. Calma di giorno, tavoli all'aperto la sera, senza traccia di discoteca.",exp:["Giro in barca alle calette di Granadella e La Barraca","Aperitivo e cena nella zona del porto","Trekking leggero nel parco del Montgó","Mercatino e centro storico"],evening:"Tramonto al porto, vermut e tapas di pesce, poi due passi tra le viuzze del casco antiguo illuminato.",trips:["Calpe e il Peñón","Guadalest","Dénia","Valencia"]},
+{id:"mor",n:"Moraira",r:"Costa Blanca · Spagna",c:"ES",lock:12,tr:5,se:2,beach:4,kids:5,food:4,sea:"Cala e spiagge a pochi minuti",ap:"Alicante",vol:"facile",vi:"alta",pl:900,ph:1400,tag:"La sorella più quieta ed elegante di Jávea.",desc:"Raccolta attorno a un castelletto sul mare, Moraira è il rifugio di chi cerca pace vera. Niente caos, acque trasparenti, una manciata di ottimi ristoranti e ville immerse nel verde.",exp:["Bagni alla Cala del Portet","Snorkeling lungo gli scogli","Cena di pesce fronte porticciolo","Degustazione di Moscatel di Teulada"],evening:"Cena lenta sul lungomare, gelato in piazza e silenzio: qui la sera si rallenta apposta.",trips:["Jávea","Calpe","Altea","Benissa"]},
+{id:"alt",n:"Altea",r:"Costa Blanca · Spagna",c:"ES",lock:13,tr:4,se:4,beach:3,kids:4,food:4,sea:"Sul mare (spiagge di ciottoli)",ap:"Alicante",vol:"facile",vi:"media",pl:800,ph:1300,tag:"Il borgo bianco con la cupola blu, vivo la sera.",desc:"Il casco antiguo di case bianche e bouganville sale fino alla celebre chiesa dalla cupola di maioliche blu. Atmosfera artistica, perfetta per le passeggiate al tramonto, con più vita serale della media.",exp:["Salita al casco antiguo al tramonto","Gallerie d'arte e artigianato","Lungomare e gelato","Barca verso le calette"],evening:"Le scalinate del centro si riempiono di tavolini: cena con vista sui tetti, poi musica soft nelle piazzette.",trips:["Calpe","Benidorm (parchi)","Guadalest","Alicante"]},
+{id:"cal",n:"Calpe",r:"Costa Blanca · Spagna",c:"ES",lock:14,tr:3,se:3,beach:5,kids:4,food:4,sea:"Sul mare (spiagge ampie)",ap:"Alicante",vol:"facile",vi:"media",pl:800,ph:1300,tag:"Spiagge ampie sotto il Peñón de Ifach.",desc:"Dominata dall'enorme scoglio del Peñón, Calpe unisce spiagge larghe e familiari, una marina di pescatori e le saline coi fenicotteri proprio dietro la città.",exp:["Salita al Peñón de Ifach (prenotare online)","Spiagge della Fossa e Arenal-Bol","Saline e fenicotteri","Cena di pesce al porto"],evening:"Passeggiata sul lungomare illuminato, cena a base di pescato del giorno nella zona del porto.",trips:["Altea","Jávea","Guadalest","Benidorm"]},
+{id:"den",n:"Dénia",r:"Costa Blanca · Spagna",c:"ES",lock:15,tr:3,se:4,beach:4,kids:4,food:5,sea:"Sul mare",ap:"Alicante / Valencia",vol:"facile",vi:"alta",pl:900,ph:1400,tag:"Capitale del gusto, marina e traghetti per le isole.",desc:"Città gastronomica riconosciuta, con un castello che domina il porto e una marina viva. La sera è animata ma mai eccessiva, e da qui partono i traghetti per Ibiza e Formentera.",exp:["Tour gastronomico e tapas","Salita al castello al tramonto","Spiagge di Las Rotas e Les Marines","Gita in giornata a Ibiza o Formentera"],evening:"Tapas crawl tra i bar del centro storico, poi una passeggiata fino al porto tra le luci delle barche.",trips:["Jávea","Ibiza/Formentera","Valencia","Montgó"]},
+{id:"ner",n:"Nerja",r:"Costa del Sol · Spagna",c:"ES",lock:16,tr:3,se:4,beach:4,kids:4,food:4,sea:"Sul mare",ap:"Málaga",vol:"facile",vi:"alta",pl:800,ph:1300,tag:"Il Balcón de Europa e le calette tra le scogliere.",desc:"Affacciata sul celebre Balcón de Europa, Nerja ha un centro pedonale pieno di vita la sera e calette raccolte tra le scogliere. Voli comodissimi da Málaga.",exp:["Le grotte di Nerja","Balcón de Europa e calette","Il borgo bianco di Frigiliana","Spiaggia di Maro"],evening:"Aperitivo sul Balcón de Europa con il mare sotto i piedi, poi cena nelle vie pedonali brulicanti.",trips:["Frigiliana","Málaga","Granada","Maro"]},
+{id:"est",n:"Estepona",r:"Costa del Sol · Spagna",c:"ES",lock:17,tr:4,se:3,beach:4,kids:4,food:4,sea:"Sul mare",ap:"Málaga",vol:"facile",vi:"alta",pl:900,ph:1400,tag:"Centro fiorito e murales, calma vicino a Marbella.",desc:"Più autentica e tranquilla della vicina Marbella, ha un centro storico di vicoli fioriti, un percorso di grandi murales e un lungomare lungo e curato.",exp:["Ruta de los Murales e vicoli fioriti","Lungomare e spiagge","Mercato del porto","Gita a Marbella e Puerto Banús"],evening:"Cena nelle piazzette fiorite del casco antiguo, gelato lungo il paseo marítimo.",trips:["Marbella","Gibilterra","Ronda","Málaga"]},
+{id:"con",n:"Conil / Zahara",r:"Costa de la Luz · Spagna",c:"ES",lock:18,tr:4,se:3,beach:5,kids:4,food:4,sea:"Sul mare (spiagge enormi)",ap:"Jerez / Siviglia",vol:"scomodo",vi:"media",pl:800,ph:1300,tag:"Spiagge atlantiche immense e tonno rosso.",desc:"Due paesi bianchi sull'Atlantico con spiagge a perdita d'occhio e cucina di mare straordinaria. Il rovescio della medaglia per voi sono i voli, meno comodi dall'Italia.",exp:["Spiagge selvagge e dune","Tonno rosso di almadraba","Vejer de la Frontera arroccato","Surf e kite leggeri"],evening:"Pesce e vino di Cadice in una terraza, poi tramonto lunghissimo sull'oceano.",trips:["Vejer","Cadice","Tarifa","Siviglia"]},
+{id:"beg",n:"Begur e cale",r:"Costa Brava · Spagna",c:"ES",lock:19,tr:4,se:3,beach:4,kids:3,food:4,sea:"Cale a pochi minuti",ap:"Barcellona / Girona",vol:"medio",vi:"alta",pl:1000,ph:1600,tag:"Calette di ciottoli incastonate tra i pini.",desc:"Borghi eleganti e calette spettacolari come Tamariu e Llafranc, collegate dal sentiero di ronda a strapiombo sul mare. Una delle zone più raffinate della costa spagnola.",exp:["Calette di Tamariu, Aiguablava e Llafranc","Sentiero di ronda tra le scogliere","Cadaqués e il Cap de Creus","Barca e snorkeling"],evening:"Cena con vista cala, poi passeggiata lungo il sentiero di ronda sotto le stelle.",trips:["Cadaqués","Girona","Empúries","Barcellona"]},
+{id:"sit",n:"Sitges",r:"vicino Barcellona · Spagna",c:"ES",lock:20,tr:2,se:5,beach:4,kids:3,food:4,sea:"Sul mare",ap:"Barcellona",vol:"facile",vi:"media",pl:1000,ph:1600,tag:"Raffinata e bellissima, ma con molta vita notturna.",desc:"Cittadina balneare elegante a mezz'ora da Barcellona, con lungomare modernista e spiagge in centro. Splendida, ma è anche la più festaiola del gruppo: ottima se cercate energia.",exp:["Passeggiata sul lungomare modernista","Spiagge in pieno centro","Gita a Barcellona","Ristoranti e locali serali"],evening:"Cena affacciati sul mare e lunga serata tra i locali del centro: qui la notte è protagonista.",trips:["Barcellona","Tarragona","Penedès (vini)","Montserrat"]},
+{id:"men",n:"Minorca",r:"Baleari · Spagna",c:"ES",lock:21,tr:5,se:3,beach:5,kids:4,food:4,sea:"Cale a pochi minuti",ap:"Mahón",vol:"medio",vi:"alta",pl:1000,ph:1600,tag:"L'isola più tranquilla, calette turchesi e villaggi bianchi.",desc:"Riserva della biosfera fatta di calette da cartolina e paesi bianchi silenziosi. Ciutadella regala belle serate sul porto, Fornells è il regno dell'aragosta.",exp:["Cale Macarella, Turqueta e Mitjana","Il Camí de Cavalls in barca o a piedi","Sera sul porto di Ciutadella","Caldereta de langosta a Fornells"],evening:"Tramonto a Ciutadella, cena sul porto vecchio e gin Xoriguer della casa: calma assoluta.",trips:["Ciutadella","Fornells","Monte Toro","grotte"]},
+{id:"mal",n:"Maiorca (nord/est)",r:"Baleari · Spagna",c:"ES",lock:22,tr:4,se:3,beach:4,kids:4,food:4,sea:"Sul mare / a pochi minuti",ap:"Palma",vol:"facile",vi:"alta",pl:1000,ph:1600,tag:"Lontano dalla movida: nord ed est calmi e bellissimi.",desc:"Dimenticate Magaluf: Pollença, Alcúdia e le cale di Santanyí sono un'altra isola, fatta di borghi, mercati e montagne. E Palma è uno degli aeroporti più comodi dall'Italia.",exp:["Pollença e il Calvario","Cale di Santanyí (Mondragó)","Serra de Tramuntana panoramica","Centro storico e cattedrale di Palma"],evening:"Cena nella piazza di Pollença, passeggiata tra le case in pietra dorata.",trips:["Palma","Valldemossa","Cap de Formentor","Sóller"]},
+{id:"car",n:"Carvoeiro / Ferragudo",r:"Algarve · Portogallo",c:"PT",lock:25,tr:4,se:3,beach:5,kids:5,food:4,sea:"Sul mare",ap:"Faro",vol:"medio",vi:"alta",pl:900,ph:1400,tag:"Cala pittoresca tra le falesie, a misura di famiglia.",desc:"Una conca di sabbia chiusa tra le falesie dorate, vivace il giusto la sera. Accanto, Ferragudo resta un villaggio di pescatori ancora più quieto. Vicinissima a Benagil.",exp:["Grotta di Benagil in barca o kayak","Passadiços e sentiero dei Sette Valli","Villaggio di Ferragudo","Spiagge e calette"],evening:"Cena affacciati sulla baia illuminata, gelato sulla piazzetta sopra la spiaggia.",trips:["Benagil","Lagos","Silves","Portimão"]},
+{id:"lag",n:"Lagos e dintorni",r:"Algarve ovest · Portogallo",c:"PT",lock:26,tr:3,se:4,beach:5,kids:4,food:4,sea:"Sul mare",ap:"Faro",vol:"medio",vi:"alta",pl:900,ph:1400,tag:"Vivace e bellissima: scogliere, barche, centro storico.",desc:"Mura storiche, un centro pieno di vita e le scogliere spettacolari di Ponta da Piedade. Più movimentata, ma con tanti angoli quieti nei paesini vicini come Luz, Burgau e Salema.",exp:["Ponta da Piedade in barca","Spiagge di Luz, Burgau e Salema","Centro storico e mura","Avvistamento delfini"],evening:"Aperitivo al tramonto sulle scogliere, cena e vita nelle vie del centro storico.",trips:["Sagres","Benagil","Aljezur","Monchique"]},
+{id:"arm",n:"Armação de Pêra",r:"Algarve · Portogallo",c:"PT",lock:27,tr:3,se:3,beach:5,kids:5,food:3,sea:"Sul mare",ap:"Faro",vol:"medio",vi:"media",pl:800,ph:1300,tag:"Lunga spiaggia sabbiosa, comoda e centrale.",desc:"Posizione baricentrica sull'Algarve e una delle spiagge più lunghe della regione. Semplice e pratica, ottima base per esplorare ovest ed est con poca strada.",exp:["Lunga spiaggia e bagni","Barca alle grotte e Benagil","Borgo e castello di Silves","Parchi acquatici vicini"],evening:"Passeggiata sul lungomare e cena di pesce alla griglia in riva.",trips:["Benagil","Silves","Albufeira","Carvoeiro"]},
+{id:"cas",n:"Cascais",r:"area Lisbona · Portogallo",c:"PT",lock:28,tr:3,se:4,beach:4,kids:4,food:5,sea:"Sul mare",ap:"Lisbona",vol:"facile",vi:"media",pl:1000,ph:1600,tag:"Elegante cittadina di mare a un passo da Lisbona.",desc:"Marina raffinata, baie cittadine e sere eleganti senza eccessi, con Lisbona a quaranta minuti. La base più comoda in assoluto per un gruppo che arriva da tutta Italia.",exp:["Sintra e i suoi palazzi","Spiaggia selvaggia di Guincho","Boca do Inferno e il centro","Una giornata a Lisbona"],evening:"Aperitivo in marina, cena di pesce e passeggiata tra le vie eleganti del centro.",trips:["Sintra","Lisbona","Cabo da Roca","Guincho"]},
+{id:"eri",n:"Ericeira",r:"area Lisbona · Portogallo",c:"PT",lock:29,tr:4,se:3,beach:4,kids:4,food:4,sea:"Sul mare",ap:"Lisbona",vol:"facile",vi:"media",pl:900,ph:1400,tag:"Paese del surf, informale, pesce eccellente.",desc:"Riserva mondiale del surf, bianca e informale, con un'atmosfera giovane ma rilassata e una cucina di mare formidabile. Lisbona resta vicinissima.",exp:["Surf e bodyboard per tutti i livelli","Calette e spiagge","Cena di pesce nel centro","Gita a Sintra e Lisbona"],evening:"Tramonto sugli spot da surf, cena di crostacei e birra fresca tra le casette bianche.",trips:["Sintra","Mafra","Lisbona","Peniche"]},
+{id:"ses",n:"Sesimbra",r:"area Lisbona · Portogallo",c:"PT",lock:30,tr:4,se:3,beach:4,kids:4,food:4,sea:"Sul mare",ap:"Lisbona",vol:"facile",vi:"media",pl:900,ph:1400,tag:"Borgo di pescatori davanti al parco dell'Arrábida.",desc:"A sud di Lisbona, un borgo di pescatori incastonato sotto il verde del parco naturale dell'Arrábida, con spiagge protette dall'acqua trasparente e pesce freschissimo.",exp:["Spiagge dell'Arrábida (Galápinhos)","Castello con vista","Barca lungo la costa","Pesce fresco al porto"],evening:"Grigliata di pesce sul lungomare, passeggiata fino al castello illuminato.",trips:["Arrábida","Setúbal","Lisbona","Tróia"]},
+{id:"com",n:"Comporta",r:"sud di Lisbona · Portogallo",c:"PT",lock:31,tr:5,se:2,beach:5,kids:4,food:4,sea:"Spiagge a pochi minuti",ap:"Lisbona",vol:"medio",vi:"media",pl:1400,ph:2500,tag:"Pinete e spiagge selvagge, chic ma silenziosa.",desc:"Risaie, pinete e chilometri di spiaggia atlantica selvaggia: di moda ma low-key e silenziosa. La più scenografica, e anche la più cara del gruppo.",exp:["Spiagge infinite tra le dune","Passeggiate a cavallo sulla sabbia","Cantine e mercatini di design","Delfini a Tróia"],evening:"Tramonto sulle dune, cena a piedi nudi in un beach club essenziale e chic.",trips:["Tróia","Setúbal","Lisbona","Melides"]},
+{id:"ben",n:"Benidorm",r:"Costa Blanca · Spagna",c:"ES",lock:32,tr:1,se:5,beach:5,kids:5,food:3,sea:"Sul mare (grandi spiagge)",ap:"Alicante",vol:"facile",vi:"media",pl:600,ph:1100,tag:"Grattacieli, spiagge enormi e vita notturna no-stop.",desc:"La capitale del turismo di massa della Costa Blanca: skyline di torri, due spiagge immense e divertimento senza sosta. È l'opposto della tranquillità, ma imbattibile per servizi, parchi a tema e vita serale.",exp:["Spiagge di Levante e Poniente","Parchi a tema e acquatici (Terra Mitica, Aqualandia)","Vita notturna e locali del centro","Casco antiguo e Balcon del Mediterraneo"],evening:"Lungomare illuminato, cena e poi locali aperti fino a tardi: qui la sera non finisce mai.",trips:["Altea","Guadalest","Calpe","Alicante"]}
+];
+const DET={
+jav:{forchi:"Chi vuole calette tra le pinete, buon cibo e serate vivaci ma senza caos.",exp:[["Calette di Granadella e La Barraca","Due gioielli di ciottoli e acqua trasparente, in auto o in barca: le più belle della zona."],["Aperitivo e cena al porto","La sera la zona del puerto si riempie di tavoli all'aperto: vermut, pesce e gente del posto."],["Parco naturale del Montgó","Sentieri panoramici sul massiccio che domina il borgo, dolci e adatti a tutti."],["Centro storico e mercato","Vicoli bianchi, la chiesa-fortezza e il mercato coperto per i prodotti locali."]],evening:"Si parte dal porto per il tramonto, con un vermut e tapas di pesce. Poi due passi tra le viuzze illuminate del casco antiguo, gelato in mano.",dasapere:"Borgo diviso in tre nuclei (centro, porto, spiaggia dell'Arenal): meglio una villa con auto per spostarsi comodi. Alicante a poco più di un'ora.",trips:[["Calpe e il Peñón","~25 min, lo scoglio simbolo della costa"],["Guadalest","borgo arroccato nell'entroterra, in giornata"],["Dénia","~30 min, città del gusto e marina"],["Valencia","in giornata, città d'arte e paella"]]},
+mor:{forchi:"Chi mette la quiete al primo posto, con acque limpide e cene eleganti ma rilassate.",exp:[["Cala del Portet","Una baia raccolta di acqua cristallina, perfetta per famiglie e nuotate lente."],["Snorkeling tra gli scogli","Fondali limpidi e protetti lungo la costa rocciosa attorno al paese."],["Cena fronte porticciolo","Pochi ottimi ristoranti di pesce affacciati sulle barche."],["Moscatel di Teulada","Degustazione del vino dolce locale nelle cantine dell'entroterra vicino."]],evening:"La cena si fa lenta sul lungomare, con il porticciolo davanti. Poi gelato in piazza e silenzio: qui la sera rallenta apposta.",dasapere:"Pochissima vita notturna: è il suo pregio, non un difetto. Alicante a poco più di un'ora; auto utile per le calette.",trips:[["Jávea","~15 min, calette e porto vivace"],["Calpe","~25 min, il Peñón"],["Altea","~30 min, borgo bianco serale"],["Benissa","entroterra autentico, in giornata"]]},
+alt:{forchi:"Chi ama i borghi bianchi pittoreschi e vuole un po' di vita serale tra arte e tapas.",exp:[["Casco antiguo al tramonto","La salita tra case bianche e bouganville fino alla chiesa dalla cupola blu."],["Gallerie e artigianato","Il paese alto è pieno di studi d'artista, ceramiche e botteghe."],["Lungomare e ciottoli","Passeggiata sul paseo e bagni nelle spiagge di ghiaia, acqua pulitissima."],["Barca verso le calette","Escursioni in giornata alle cale vicine di Calpe e Benidorm."]],evening:"Le scalinate del centro si riempiono di tavolini con vista sui tetti. Si cena con calma e poi musica soft nelle piazzette, senza eccessi.",dasapere:"Spiagge di ciottoli, non di sabbia: scarpette da scoglio comode per i bambini. Tra Calpe e Benidorm, ottima base intermedia.",trips:[["Calpe","~15 min, spiagge e Peñón"],["Benidorm","~20 min, parchi a tema coi bimbi"],["Guadalest","borgo arroccato, in giornata"],["Alicante","~1h, città e castello"]]},
+cal:{forchi:"Famiglie che vogliono spiagge ampie e sabbiose sotto un panorama spettacolare.",exp:[["Peñón de Ifach","Salita all'enorme scoglio-riserva con vista pazzesca (ingressi contingentati, prenotare)."],["Spiagge Fossa e Arenal-Bol","Sabbia fine e fondali dolci, ideali per i più piccoli."],["Saline e fenicotteri","Una laguna proprio dietro la città dove sostano i fenicotteri."],["Pesce al porto","La lonja e i ristoranti del porto per il pescato del giorno."]],evening:"Passeggiata sul lungomare illuminato, con il Peñón che si staglia nel buio. Cena di pesce nella zona del porto, tranquilla e familiare.",dasapere:"Più turistica e costruita di Altea o Moraira, ma comodissima e con spiagge larghe. Prenotare per tempo la salita al Peñón.",trips:[["Altea","~15 min, borgo bianco"],["Jávea","~30 min, calette"],["Guadalest","entroterra, in giornata"],["Benidorm","~20 min, parchi"]]},
+den:{forchi:"Buongustai e chi vuole marina viva, traghetti per le isole e voli comodi.",exp:[["Tour gastronomico","Città riconosciuta per la cucina: tapas, gambero rosso e mercati."],["Castello al tramonto","La fortezza domina porto e tetti, bellissima all'ora dorata."],["Las Rotas e Les Marines","Calette rocciose a sud, lunghe spiagge sabbiose a nord."],["Ibiza o Formentera","Traghetto veloce dal porto per una giornata alle Baleari."]],evening:"Tapas crawl tra i bar del centro storico, di locale in locale. Poi una passeggiata fino al porto, tra le luci delle barche.",dasapere:"Doppio aeroporto utile (Alicante e Valencia, entrambi ~1h). Dal porto i traghetti per Ibiza e Formentera in giornata.",trips:[["Jávea","~20 min, calette e Montgó"],["Ibiza/Formentera","traghetto, in giornata"],["Valencia","~1h, città d'arte"],["Montgó","parco naturale, trekking"]]},
+ner:{forchi:"Chi vuole un centro vivace la sera, calette tra le scogliere e voli facili.",exp:[["Grotte di Nerja","Spettacolari caverne con concrezioni enormi, fresche d'estate."],["Balcón de Europa","La terrazza simbolo a picco sul mare, cuore del passeggio serale."],["Frigiliana","Uno dei borghi bianchi più belli di Spagna, alle spalle del paese."],["Spiaggia di Maro","Cala incorniciata dal verde, con cascata, poco fuori città."]],evening:"Aperitivo sul Balcón de Europa, con il mare sotto i piedi. Poi cena nelle vie pedonali brulicanti, gelato passeggiando.",dasapere:"Málaga a circa un'ora rende i voli comodissimi. Calette piccole: per spiagge grandi serve qualche spostamento.",trips:[["Frigiliana","~15 min, borgo bianco"],["Málaga","~1h, città e musei"],["Granada","l'Alhambra, in giornata"],["Maro","~10 min, cala e cascata"]]},
+est:{forchi:"Chi cerca un centro autentico e fiorito, con calma a due passi da Marbella.",exp:[["Ruta de los Murales","Decine di grandi murales d'autore tra i vicoli del centro storico."],["Vicoli fioriti","Il casco antiguo è un tripudio di fiori e piazzette bianche."],["Lungomare e spiagge","Un paseo lunghissimo e curato, con spiagge tranquille."],["Mercato del porto","Pesce e atmosfera locale alla lonja del porto."]],evening:"Cena nelle piazzette fiorite del casco antiguo, lontano dalla folla. Poi gelato lungo il paseo marítimo, passo lento.",dasapere:"Molto più tranquilla di Marbella ma vicinissima ad essa per chi cerca movida. Málaga a circa un'ora.",trips:[["Marbella","~25 min, lusso e movida"],["Gibilterra","la Rocca, in giornata"],["Ronda","spettacolare città sul burrone"],["Málaga","~1h, città"]]},
+con:{forchi:"Amanti di spiagge oceaniche immense e gran cucina di mare, disposti a voli meno comodi.",exp:[["Spiagge e dune selvagge","Sabbia atlantica a perdita d'occhio, vento e onde leggere."],["Tonno rosso di almadraba","La specialità della zona, da pesca tradizionale: imperdibile."],["Vejer de la Frontera","Borgo bianco arroccato, tra i più belli dell'Andalusia."],["Surf e kite leggeri","Spot adatti ai principianti lungo la Costa de la Luz."]],evening:"Pesce e vino di Cadice in una terraza, senza fretta. Poi un tramonto lunghissimo sull'oceano, che qui dura davvero.",dasapere:"Il punto debole per voi sono i voli: Jerez e Siviglia sono meno serviti dall'Italia e più lontani. Mare atlantico, più fresco e ventoso.",trips:[["Vejer","~20 min, borgo bianco"],["Cadice","~45 min, città antichissima"],["Tarifa","~1h, vento e Africa di fronte"],["Siviglia","in giornata, città d'arte"]]},
+beg:{forchi:"Chi vuole calette eleganti tra i pini e bei sentieri sul mare, in una costa raffinata.",exp:[["Tamariu, Aiguablava, Llafranc","Tre calette incantevoli di ciottoli chiari e acqua turchese."],["Camí de ronda","Sentiero a strapiombo che collega le cale, panoramico e suggestivo."],["Cap de Creus e Cadaqués","Il paese di Dalí e il promontorio selvaggio, in giornata."],["Barca e snorkeling","Calette nascoste raggiungibili solo via mare."]],evening:"Cena con vista cala, mentre il mare diventa nero. Poi una passeggiata sul camí de ronda sotto le stelle.",dasapere:"Le cale sono piccole e amatissime: in alta stagione arrivare presto. Voli su Barcellona o Girona, poi ~1h30/2h di auto.",trips:[["Cadaqués","il borgo di Dalí, in giornata"],["Girona","~1h, città medievale"],["Empúries","rovine greco-romane sul mare"],["Barcellona","in giornata, ~1h30"]]},
+sit:{forchi:"Chi vuole bellezza ed energia serale, a un passo da Barcellona (poca quiete).",exp:[["Lungomare modernista","Ville liberty e palme lungo un paseo elegante."],["Spiagge in centro","Sabbia raggiungibile a piedi dal cuore del paese."],["Barcellona in giornata","Treno diretto in circa mezz'ora per la grande città."],["Locali e ristoranti","Scena gastronomica e notturna tra le più vivaci della costa."]],evening:"Cena affacciati sul mare, poi lunga serata tra i locali del centro. Qui la notte è protagonista: ottimo se cercate movimento.",dasapere:"È la più festaiola del gruppo e d'estate molto affollata: poca tranquillità. Comodissima però, con Barcellona a mezz'ora di treno.",trips:[["Barcellona","~30 min in treno"],["Tarragona","~45 min, rovine romane"],["Penedès","cantine di cava, in giornata"],["Montserrat","monastero in montagna"]]},
+men:{forchi:"Chi cerca le calette turchesi più belle e la quiete assoluta, senza rinunciare a un porto vivo.",exp:[["Macarella, Turqueta, Mitjana","Le calette-cartolina del sud, acqua turchese tra i pini."],["Camí de Cavalls","L'antico sentiero costiero che gira l'isola, a piedi o in barca."],["Sera a Ciutadella","Il porto vecchio della città bianca, il salotto serale dell'isola."],["Caldereta a Fornells","La zuppa di aragosta nel villaggio di pescatori del nord."]],evening:"Tramonto a Ciutadella e cena sul porto vecchio, con un gin Xoriguer della casa. Calma assoluta, ritmo lento.",dasapere:"Le cale più belle hanno parcheggi a numero chiuso o navette: meglio arrivare presto. Volo su Mahón, spesso con scalo dall'Italia.",trips:[["Ciutadella","la città bianca, sere sul porto"],["Fornells","aragosta e baia tranquilla"],["Monte Toro","il punto più alto, vista sull'isola"],["Cale del sud","Macarella e Turqueta"]]},
+mal:{forchi:"Chi vuole il lato calmo e bello di Maiorca — borghi, montagne e cale — con voli facilissimi.",exp:[["Pollença e il Calvario","Borgo elegante e la scalinata di 365 gradini fino alla cappella."],["Cale di Santanyí (Mondragó)","Calette di sabbia chiara e acqua turchese nel parco naturale."],["Serra de Tramuntana","Strada panoramica tra uliveti e villaggi di pietra, patrimonio UNESCO."],["Palma","Cattedrale gotica sul mare e centro storico vivace."]],evening:"Cena nella piazza di Pollença, tra le case in pietra dorata. Passeggiata serale lenta, lontano dalla movida del sud-ovest.",dasapere:"Evitare la zona di Magaluf/Palmanova: nord ed est sono un'altra isola. Palma è uno degli aeroporti più comodi dall'Italia.",trips:[["Palma","~50 min, città e cattedrale"],["Valldemossa","borgo di montagna, in giornata"],["Cap de Formentor","il faro a nord, panorami"],["Sóller","valle di agrumi e tram d'epoca"]]},
+car:{forchi:"Famiglie che vogliono una cala scenografica tra le falesie, vivace il giusto.",exp:[["Grotta di Benagil","La grotta-simbolo dell'Algarve, in barca, kayak o SUP."],["Passadiços e Sete Vales","Passerelle e sentiero panoramico tra le falesie dorate."],["Ferragudo","Villaggio di pescatori accanto, ancora più quieto e autentico."],["Calette nascoste","Tante piccole spiagge tra le rocce lungo la costa."]],evening:"Cena affacciati sulla baia illuminata, col rumore del mare. Gelato sulla piazzetta sopra la spiaggia, atmosfera familiare.",dasapere:"La spiaggia principale è raccolta e in alta stagione si riempie. Faro a ~50 min; ottima base centrale per l'Algarve.",trips:[["Benagil","la grotta, pochi minuti in barca"],["Lagos","~40 min, scogliere e centro"],["Silves","castello e borgo nell'entroterra"],["Portimão","marina e gite in barca"]]},
+lag:{forchi:"Chi vuole scogliere spettacolari e un centro vivace, con paesini quieti vicini.",exp:[["Ponta da Piedade","Archi e faraglioni dorati, da vedere in barca al tramonto."],["Luz, Burgau, Salema","Tre paesini di pescatori tranquilli con belle spiagge."],["Centro storico e mura","Vie animate, locali e la storia delle scoperte portoghesi."],["Avvistamento delfini","Uscite in barca al largo, spesso con avvistamenti."]],evening:"Aperitivo al tramonto sulle scogliere di Ponta da Piedade. Poi cena e vita nelle vie del centro storico, le più vivaci della zona.",dasapere:"Più movimentata e turistica: per la quiete spostarsi a Luz o Salema. Faro a ~1h; Sagres e la costa selvaggia a ovest.",trips:[["Sagres","la 'fine del mondo' a ovest, in giornata"],["Benagil","~40 min, la grotta"],["Aljezur","costa atlantica selvaggia"],["Monchique","montagna e terme nell'entroterra"]]},
+arm:{forchi:"Chi vuole una lunga spiaggia sabbiosa e una base pratica e centrale, senza fronzoli.",exp:[["Lunga spiaggia","Tra le più estese dell'Algarve, sabbia dorata e fondali dolci."],["Grotte in barca","Escursioni alle grotte e a Benagil, vicinissime."],["Silves","Castello rosso e borgo medievale nell'entroterra."],["Parchi acquatici","Grandi parchi vicini, perfetti coi bambini."]],evening:"Passeggiata sul lungomare e cena di pesce alla griglia in riva. Semplice e rilassata, senza vita notturna spinta.",dasapere:"Posizione baricentrica: poca strada per esplorare est e ovest. Cucina e centro un po' più anonimi rispetto ai borghi vicini.",trips:[["Benagil","la grotta, pochi minuti in barca"],["Silves","castello e borgo, in giornata"],["Albufeira","~20 min, vita serale"],["Carvoeiro","~15 min, cala tra le falesie"]]},
+cas:{forchi:"Un gruppo numeroso che arriva da città diverse: è la base più comoda, elegante e ben collegata.",exp:[["Sintra","Palazzi fiabeschi e foreste, una gita imperdibile nell'entroterra."],["Praia do Guincho","Spiaggia atlantica selvaggia e ventosa, scenografica."],["Boca do Inferno e centro","Scogliere drammatiche e un centro raffinato da passeggio."],["Lisbona in giornata","La capitale a ~40 min in treno lungo il fiume."]],evening:"Aperitivo in marina tra le barche, poi cena di pesce. Passeggiata serale tra le vie eleganti, senza eccessi.",dasapere:"Aeroporto di Lisbona vicino e super collegato dall'Italia: il punto forte per un gruppo. Mare atlantico più fresco; spiagge cittadine raccolte.",trips:[["Sintra","~30 min, palazzi e foreste"],["Lisbona","~40 min in treno"],["Cabo da Roca","il punto più a ovest d'Europa"],["Guincho","spiaggia selvaggia e surf"]]},
+eri:{forchi:"Chi ama un'atmosfera informale da paese del surf, gran pesce e Lisbona vicina.",exp:[["Surf per tutti","Riserva mondiale del surf: scuole e onde per ogni livello."],["Calette e spiagge","Tante baie diverse, dalle protette a quelle da onde."],["Pesce nel centro","Cucina di mare semplice e ottima tra le casette bianche."],["Sintra e Lisbona","Entrambe a breve distanza per una gita in giornata."]],evening:"Tramonto sugli spot da surf, con i surfisti ancora in acqua. Poi cena di crostacei e birra fresca tra le viuzze bianche.",dasapere:"Atmosfera giovane ma rilassata, non caotica. Atlantico fresco e ventoso; Lisbona e Sintra a meno di un'ora.",trips:[["Sintra","~40 min, palazzi"],["Mafra","il monumentale convento, in giornata"],["Lisbona","~50 min, capitale"],["Peniche","onde e isole Berlengas"]]},
+ses:{forchi:"Chi vuole un borgo di pescatori quieto sotto un parco verde, con acqua trasparente.",exp:[["Spiagge dell'Arrábida","Galápinhos e cale di acqua turchese nel parco naturale."],["Castello panoramico","La fortezza sopra il paese, con vista sulla baia."],["Barca lungo la costa","Calette raggiungibili via mare, tra falesie verdi."],["Pesce al porto","Pescato freschissimo nei ristoranti sul lungomare."]],evening:"Grigliata di pesce sul lungomare, profumo di mare. Poi passeggiata fino al castello illuminato, tranquilla.",dasapere:"Il parco dell'Arrábida limita gli accessi alle spiagge più belle in alta stagione (navette). Lisbona a ~45 min.",trips:[["Arrábida","il parco e le sue cale"],["Setúbal","~30 min, città e pesce"],["Lisbona","~45 min, capitale"],["Tróia","penisola di sabbia, in traghetto"]]},
+com:{forchi:"Chi cerca spiagge selvagge infinite e atmosfera chic ma low-key, e non bada al budget.",exp:[["Spiagge tra le dune","Chilometri di sabbia atlantica selvaggia oltre le pinete."],["A cavallo sulla sabbia","Passeggiate a cavallo in riva, l'esperienza simbolo della zona."],["Design e cantine","Boutique, mercatini di design e vini della penisola di Setúbal."],["Delfini a Tróia","Uscite in barca con avvistamento di delfini nell'estuario."]],evening:"Tramonto sulle dune, sandali in mano. Cena a piedi nudi in un beach club essenziale e chic, musica bassa.",dasapere:"La più scenografica ma anche la più cara del gruppo, e la più 'sparpagliata': auto indispensabile. Lisbona a poco più di un'ora.",trips:[["Tróia","penisola e delfini, in traghetto"],["Setúbal","pesce e mercato, in giornata"],["Lisbona","~1h, capitale"],["Melides","spiagge e laguna vicine"]]},
+ben:{forchi:"Chi vuole divertimento no-stop, spiagge enormi e tanto da fare coi bambini (zero tranquillità).",exp:[["Levante e Poniente","Due spiagge cittadine immense, attrezzatissime e sicure."],["Parchi a tema","Terra Mítica, Aqualandia e Mundomar: una giornata coi bimbi assicurata."],["Vita notturna","Locali, spettacoli e movida fino a tardi, tra le più intense di Spagna."],["Casco antiguo","Il piccolo borgo vecchio e il Balcón del Mediterráneo, sorprendentemente carini."]],evening:"Lungomare illuminato e cena, poi spettacoli e locali aperti fino a tardi. Qui la sera non finisce mai: è il suo bello e il suo limite.",dasapere:"È l'opposto della vacanza tranquilla: grattacieli e folla. Però economica, comodissima (Alicante vicina) e imbattibile per servizi e bambini. Ville vere poche: più appartamenti e residence.",trips:[["Altea","~20 min, borgo bianco tranquillo"],["Guadalest","borgo arroccato, in giornata"],["Calpe","~25 min, il Peñón"],["Alicante","~45 min, città e castello"]]}
+};
+const VOLI={ALC:["D","D","S","X","X"],AGP:["D","S","S","X","X"],BCN:["D","D","D","D","X"],PMI:["D","S","S","S","S"],MAH:["S","S","S","X","X"],FAO:["S","S","X","X","X"],LIS:["D","D","S","X","X"],SVQ:["D","S","X","X","X"]};
+const VL={D:["Diretto","vs-d"],S:["Stagionale","vs-s"],X:["Con scalo","vs-x"]};
+const PV={ALC:150,AGP:160,BCN:120,PMI:140,MAH:190,FAO:210,LIS:160,SVQ:180};
+function apKey(d){const a=d.ap;if(a.indexOf("Alicante")>=0)return"ALC";if(a.indexOf("Málaga")>=0)return"AGP";if(a.indexOf("Barcellona")>=0)return"BCN";if(a.indexOf("Mahón")>=0)return"MAH";if(a.indexOf("Palma")>=0)return"PMI";if(a.indexOf("Faro")>=0)return"FAO";if(a.indexOf("Lisbona")>=0)return"LIS";if(a.indexOf("Jerez")>=0||a.indexOf("Siviglia")>=0)return"SVQ";return"BCN";}
+const VOLRANK={facile:3,medio:2,scomodo:1};
+const $=s=>document.querySelector(s);
+let cf="all",seaOnly=false,picks=[];
+
+try{const sn=localStorage.getItem("dv_name");if(sn)$("#nome").value=sn;
+ const sp=JSON.parse(localStorage.getItem("dv_picks")||"[]");if(Array.isArray(sp))picks=sp.filter(id=>DATA.some(d=>d.id===id)).slice(0,3);}catch(e){}
+
+function byId(id){return DATA.find(d=>d.id===id);}
+function seg5(v){let s='<span class="seg5">';for(let i=1;i<=5;i++)s+=`<i class="${i<=v?'f':''}"></i>`;return s+'</span>';}
+function onSea(d){return !(d.sea.indexOf("15")>=0||d.sea.indexOf("laguna")>=0||d.sea.indexOf("isola")>=0);}
+function save(){try{localStorage.setItem("dv_name",$("#nome").value.trim());localStorage.setItem("dv_picks",JSON.stringify(picks));}catch(e){}}
+
+function renderList(){
+  const sv=$("#sort").value;
+  let rows=DATA.filter(d=>cf==="all"||d.c===cf).filter(d=>!seaOnly||onSea(d));
+  const cmp={tr:(a,b)=>b.tr-a.tr||b.se-a.se,se:(a,b)=>b.se-a.se||b.tr-a.tr,vo:(a,b)=>VOLRANK[b.vol]-VOLRANK[a.vol]||b.tr-a.tr,pr:(a,b)=>a.pl-b.pl,az:(a,b)=>a.n.localeCompare(b.n)};
+  rows.sort(cmp[sv]);
+  $("#count").textContent=rows.length+" mete"+(seaOnly?" sul mare":"");
+  $("#list").innerHTML=rows.map(d=>{
+    const idx=picks.indexOf(d.id),full=picks.length>=3&&idx<0;
+    return `<article class="card${idx>=0?" picked":""}" data-id="${d.id}" tabindex="0" role="button" aria-label="Scopri ${d.n}">
+      <div class="chead">
+        <div><div class="ctry">${d.r}</div><div class="cn serif">${d.n}${idx>=0?`<span class="rankflag">${idx+1}</span>`:""}</div></div>
+        <div class="price">€${(Math.round(d.pl/2)+PV[apKey(d)]).toLocaleString("it-IT")}–${(Math.round(d.ph/2)+PV[apKey(d)]).toLocaleString("it-IT")}<span>totale a persona</span></div>
+      </div>
+      <p class="tagline">${d.tag}</p>
+      <div class="costline">Alloggio <b>€${Math.round(d.pl/2).toLocaleString("it-IT")}–${Math.round(d.ph/2).toLocaleString("it-IT")}</b> + volo <b>~€${PV[apKey(d)]}</b> a/r · stima a persona</div>
+      <div class="meta">
+        <span class="chip"><span class="lab">Calma</span>${seg5(d.tr)}</span>
+        <span class="chip"><span class="lab">Sera</span>${seg5(d.se)}</span>
+        <span class="pill ${d.vol}">✈ ${d.ap}</span>
+      </div>
+      <button class="addbtn${idx>=0?" on":""}" data-add="${d.id}" ${full?"disabled":""}>${idx>=0?"✓ Tra le preferite — togli":(full?"Hai già 3 preferite":"Aggiungi alle preferite")}</button>
+    </article>`;
+  }).join("");
+}
+function togglePick(id){const i=picks.indexOf(id);if(i>=0)picks.splice(i,1);else{if(picks.length>=3)return;picks.push(id);}save();renderList();renderBar();}
+function renderBar(){const b=$("#picksbar");if(!picks.length)b.textContent="Nessuna meta scelta";else b.innerHTML=picks.map((id,i)=>`<b>${i+1}.</b> ${byId(id).n}`).join(" &nbsp; ");$("#genbtn").disabled=!(picks.length>=1&&$("#nome").value.trim().length>0);}
+
+function srow(l,v){return `<div class="srow"><span class="sl">${l}</span><span class="track"><span class="fill" style="width:${v*20}%"></span></span><span class="sv">${v}/5</span></div>`;}
+function openDetail(id){
+  const d=byId(id),idx=picks.indexOf(id),full=picks.length>=3&&idx<0;
+  const X=DET[d.id]||{},EXP=X.exp||d.exp.map(e=>[e,""]),TRIPS=X.trips||d.trips.map(t=>[t,""]);
+  const V=VOLI[apKey(d)];
+  $("#sheet").innerHTML=`
+    <div class="dhead">
+      <button class="closex" id="closex" aria-label="Chiudi">✕</button>
+      <div class="ctry">${d.r}</div>
+      <div class="cn serif" id="sheet-title">${d.n}</div>
+    </div>
+    <div class="sbody">
+      <p class="lead">${d.desc}</p>
+      <div class="facts">
+        <div class="fact"><div class="k">Mare</div><div class="v">${d.sea}</div></div>
+        <div class="fact"><div class="k">Voli dall'Italia</div><div class="v"><span class="pill ${d.vol}">${d.ap} · ${d.vol}</span></div></div>
+        <div class="fact"><div class="k">Ville da 13</div><div class="v">disponibilità ${d.vi}</div></div>
+        <div class="fact"><div class="k">Prezzo a persona · sett</div><div class="v">€${Math.round(d.pl/2).toLocaleString("it-IT")}–${Math.round(d.ph/2).toLocaleString("it-IT")} a persona</div></div>
+      </div>
+      <h3 class="sec serif">Voli dall'Italia</h3>
+      <div class="volo-grid">${["Milano","Bologna","Napoli","Palermo","Salerno"].map((c,i)=>{const v=VL[V[i]];return `<div class="volo-row"><span class="vc">${c}</span><span class="vs ${v[1]}">${v[0]}</span></div>`;}).join("")}</div>
+      <div class="volo-price">✈ Volo medio a/r <b>~€${PV[apKey(d)]}</b> a persona <span>indicativo</span></div>
+      <div class="volo-total">Totale indicativo a persona (alloggio 1 sett. + volo a/r): <b>~€${(Math.round(d.pl/2)+PV[apKey(d)]).toLocaleString("it-IT")}–${(Math.round(d.ph/2)+PV[apKey(d)]).toLocaleString("it-IT")}</b></div>
+      <div class="volo-note"><b>Verso ${d.ap}.</b> Indicazioni sugli operativi estivi attuali (soprattutto Ryanair, easyJet, Vueling): molte rotte sono stagionali, da riconfermare per settembre 2027. Da Salerno (scalo piccolo e nuovo) e da Palermo diverse mete richiedono uno scalo; in alternativa conviene partire da Napoli.</div>
+      <div class="scores">${srow("Tranquillità",d.tr)}${srow("Vita serale",d.se)}${srow("Spiaggia",d.beach)}${srow("Coi bambini",d.kids)}${srow("Gastronomia",d.food)}</div>
+      ${X.forchi?`<div class="forchi"><span>Per chi è</span>${X.forchi}</div>`:""}
+      <h3 class="sec serif">Esperienze da non perdere</h3>
+      <ul class="expL">${EXP.map(e=>`<li><div class="et">${e[0]}</div>${e[1]?`<div class="ed">${e[1]}</div>`:""}</li>`).join("")}</ul>
+      <h3 class="sec serif">Una serata tipo</h3>
+      <div class="evening"><b>Dopo il tramonto</b>${X.evening||d.evening}</div>
+      ${X.dasapere?`<h3 class="sec serif">Da sapere</h3><div class="dasapere">${X.dasapere}</div>`:""}
+      <h3 class="sec serif">Gite nei dintorni</h3>
+      <div class="tripsL">${TRIPS.map(tp=>`<div class="trip"><b>${tp[0]}</b>${tp[1]?`<span>${tp[1]}</span>`:""}</div>`).join("")}</div>
+      <div class="sticky-add"><button class="btn full ${idx>=0?"ghost":""}" id="detadd" ${full?"disabled":""}>${idx>=0?"✓ Togli dalle preferite":(full?"Hai già scelto 3 mete":"Aggiungi alle preferite")}</button><button class="btn ghost full" id="detback" style="margin-top:8px">← Torna alle località</button></div>
+    </div>`;
+  $("#overlay").classList.add("on");document.body.style.overflow="hidden";$("#sheet").scrollTop=0;
+  $("#closex").onclick=closeDetail;
+  const bk=$("#detback");if(bk)bk.onclick=closeDetail;
+  const b=$("#detadd");if(b&&!b.disabled)b.onclick=()=>{togglePick(id);closeDetail();};
+}
+function closeDetail(){$("#overlay").classList.remove("on");document.body.style.overflow="";}
+
+function b64e(s){return btoa(unescape(encodeURIComponent(s)));}
+function b64d(s){return decodeURIComponent(escape(atob(s)));}
+function generate(){
+  const name=$("#nome").value.trim();if(!name||!picks.length)return;
+  const code="VOTO:"+b64e(JSON.stringify({n:name,p:picks}));
+  try{const mine=JSON.parse(localStorage.getItem("dv_collected")||"[]");
+    const others=mine.filter(c=>{try{return JSON.parse(b64d(c.slice(5))).n.toLowerCase()!==name.toLowerCase();}catch(e){return true;}});
+    others.push(code);localStorage.setItem("dv_collected",JSON.stringify(others));}catch(e){}
+  const lines=picks.map((id,i)=>`${i+1}) ${byId(id).n}`).join("\n");
+  const msg=`Le mie mete per la vacanza 2027:\n${lines}\n\nCodice per le somme (non cancellarlo):\n${code}\n\nInvialo a Shogo.`;
+  $("#sheet").innerHTML=`
+    <div class="dhead">
+      <button class="closex" id="closex" aria-label="Chiudi">✕</button>
+      <div class="ctry">Il tuo voto</div>
+      <div class="cn serif" id="sheet-title">${name}</div>
+    </div>
+    <div class="sbody">
+      <p class="lead" style="margin-bottom:10px">${picks.map((id,i)=>`<b>${i+1}.</b> ${byId(id).n}`).join("<br>")}</p>
+      <h3 class="sec serif" style="margin-top:6px">Codice voto</h3>
+      <div class="codebox">${code}</div>
+      <div class="row2"><button class="btn" id="share">Condividi</button><button class="btn dark" id="wa">WhatsApp</button></div>
+      <button class="btn ghost full" id="copy" style="margin-top:8px">Copia il codice</button>
+      <p class="note">Invialo a chi raccoglie i voti del gruppo. Puoi rigenerarlo se cambi idea.</p>
+    </div>`;
+  $("#overlay").classList.add("on");document.body.style.overflow="hidden";$("#sheet").scrollTop=0;
+  $("#closex").onclick=closeDetail;
+  $("#wa").onclick=()=>window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");
+  $("#copy").onclick=()=>{try{navigator.clipboard.writeText(code);}catch(e){}$("#copy").textContent="Copiato ✓";};
+  $("#share").onclick=()=>{if(navigator.share)navigator.share({title:"Voto vacanza 2027",text:msg});else{try{navigator.clipboard.writeText(msg);}catch(e){}$("#share").textContent="Copiato ✓";}};
+}
+
+function parseCodes(text){const seen={};[...text.matchAll(/VOTO:([A-Za-z0-9+/=]+)/g)].map(m=>m[1]).forEach(raw=>{try{const v=JSON.parse(b64d(raw));if(!v.n||!Array.isArray(v.p))return;seen[v.n.trim().toLowerCase()]={n:v.n.trim(),p:v.p.filter(id=>byId(id)).slice(0,3)};}catch(e){}});return Object.values(seen);}
+function calc(){
+  let txt=$("#codes").value;try{txt+="\n"+(JSON.parse(localStorage.getItem("dv_collected")||"[]")).join("\n");}catch(e){}
+  const votes=parseCodes(txt),box=$("#results");
+  if(!votes.length){box.innerHTML=`<div class="empty">Ancora nessun voto valido.<br>Incolla i codici ricevuti e tocca Calcola.</div>`;return;}
+  const sc={};DATA.forEach(d=>sc[d.id]={d,pts:0,vts:0,who:[]});
+  votes.forEach(v=>v.p.forEach((id,i)=>{if(!sc[id])return;sc[id].pts+=(3-i);sc[id].vts++;sc[id].who.push(v.n);}));
+  const rk=Object.values(sc).filter(s=>s.vts>0).sort((a,b)=>b.pts-a.pts||b.vts-a.vts||a.d.n.localeCompare(b.d.n));
+  const cl=["g","s","b"],top=rk.slice(0,3),rest=rk.slice(3);
+  let h=`<p class="count">${votes.length} ${votes.length===1?"voto":"voti"} · ${votes.map(v=>v.n).join(", ")}</p><div class="podium">`;
+  h+=["1","0","2"].map(p=>{const i=+p,s=top[i];return s?`<div class="pod ${cl[i]}"><div class="rk">${i+1}</div><div class="pn serif">${s.d.n}</div><div class="pp">${s.pts} punti · ${s.vts} voti</div></div>`:`<div></div>`;}).join("")+`</div>`;
+  if(rest.length)h+=rest.map((s,i)=>`<div class="resrow"><span class="pos">${i+4}</span><span class="rn">${s.d.n}<small>scelta da ${s.who.join(", ")}</small></span><span class="pts">${s.pts} pt</span></div>`).join("");
+  box.innerHTML=h;
+}
+
+document.addEventListener("click",e=>{
+  const add=e.target.closest("[data-add]");if(add){e.stopPropagation();togglePick(add.dataset.add);return;}
+  const card=e.target.closest(".card");if(card)openDetail(card.dataset.id);
+});
+$("#list").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList.contains("card")){e.preventDefault();openDetail(e.target.dataset.id);}});
+$("#overlay").addEventListener("click",e=>{if(e.target===$("#overlay"))closeDetail();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDetail();});
+$("#cf").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;[...$("#cf").children].forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");cf=b.dataset.c;renderList();});
+$("#sort").addEventListener("change",renderList);
+$("#nome").addEventListener("input",()=>{save();renderBar();});
+$("#genbtn").addEventListener("click",generate);
+$("#calc").addEventListener("click",calc);
+$("#addcodes").addEventListener("click",()=>{
+  const raws=[...$("#codes").value.matchAll(/VOTO:([A-Za-z0-9+/=]+)/g)].map(m=>"VOTO:"+m[1]);
+  if(!raws.length){$("#addcodes").textContent="Nessun codice trovato";setTimeout(()=>$("#addcodes").textContent="Aggiungi e salva",1500);return;}
+  try{const saved=JSON.parse(localStorage.getItem("dv_collected")||"[]"),map={};[...saved,...raws].forEach(c=>{try{map[JSON.parse(b64d(c.slice(5))).n.trim().toLowerCase()]=c;}catch(e){}});localStorage.setItem("dv_collected",JSON.stringify(Object.values(map)));}catch(e){}
+  $("#addcodes").textContent="Salvati ✓";setTimeout(()=>$("#addcodes").textContent="Aggiungi e salva",1500);calc();
+});
+$("#resetcodes").addEventListener("click",()=>{try{localStorage.removeItem("dv_collected");}catch(e){}$("#codes").value="";$("#results").innerHTML="";$("#resetcodes").textContent="Svuotati ✓";setTimeout(()=>$("#resetcodes").textContent="Svuota i voti salvati",1500);});
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected","false"));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("on"));
+  t.setAttribute("aria-selected","true");$("#"+t.getAttribute("aria-controls")).classList.add("on");
+  $("#votebar").style.display=t.id==="tab-mete"?"block":"none";
+  if(t.id==="tab-ris")calc();
+}));
+renderList();renderBar();
+if(!/shogo/i.test(location.hash)){var _rt=$("#tab-ris");if(_rt)_rt.style.display="none";}
+</script>
+</body>
+</html>
